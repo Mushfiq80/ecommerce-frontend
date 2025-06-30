@@ -10,6 +10,7 @@ export interface CartItem {
   image: string
   quantity: number
   category: string
+  variants?: Record<string, string>
 }
 
 interface CartContextType {

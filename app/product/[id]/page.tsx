@@ -2,15 +2,17 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { Heart, ShoppingCart, Star, Minus, Plus, Truck, Shield, RotateCcw } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Heart, ShoppingCart, Star, Minus, Plus, Truck, Shield, RotateCcw, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useCart } from "@/components/providers/cart-provider"
 import { useWishlist } from "@/components/providers/wishlist-provider"
 import { ProductCard } from "@/components/shared/product-card"
 import { Breadcrumbs } from "@/components/shared/breadcrumbs"
+import { ImageZoom } from "@/app/utility/image-zoom"
 
 // Mock product data
 const product = {
@@ -19,10 +21,10 @@ const product = {
   price: 4.99,
   originalPrice: 6.99,
   images: [
-    "/placeholder.svg?height=600&width=600",
-    "/placeholder.svg?height=600&width=600",
-    "/placeholder.svg?height=600&width=600",
-    "/placeholder.svg?height=600&width=600",
+    "/fp1.jpg",
+    "/fp2.jpg",
+    "/fp3.jpg",
+    "/fp4.jpg",
   ],
   category: "Fruits",
   rating: 4.8,
@@ -30,6 +32,18 @@ const product = {
   badge: "Organic",
   description:
     "Premium organic avocados grown using advanced hydroponic technology. These nutrient-rich fruits are perfect for your healthy lifestyle.",
+  variants: [
+    {
+      id: 1,
+      name: "Ripeness Level",
+      options: ["Ready to Eat", "Firm (2-3 days)", "Extra Firm (4-5 days)"]
+    },
+    {
+      id: 2,
+      name: "Pack Size",
+      options: ["Single (1 piece)", "Small Pack (3 pieces)", "Family Pack (6 pieces)", "Bulk Pack (12 pieces)"]
+    }
+  ],
   features: [
     "100% Organic Certified",
     "Grown with Hydroponic Technology",
@@ -44,6 +58,19 @@ const product = {
     protein: "2g",
     fiber: "7g",
   },
+  specifications: [
+    { id: 1, name: "Origin", value: "California, USA" },
+    { id: 2, name: "Season", value: "Year-round" },
+    { id: 3, name: "Storage", value: "Room temperature" },
+    { id: 4, name: "Shelf Life", value: "3-5 days" },
+    { id: 5, name: "Weight", value: "150-200g each" },
+    { id: 6, name: "Certification", value: "USDA Organic" },
+  ],
+  categories: [
+    { id: 1, name: "Organic Fruits" },
+    { id: 2, name: "Fresh Produce" },
+    { id: 3, name: "Healthy Foods" },
+  ],
   inStock: true,
   stockCount: 25,
 }
@@ -53,7 +80,7 @@ const similarProducts = [
     id: "2",
     name: "Neo-Fresh Salmon Fillet",
     price: 18.99,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/fp2.jpg",
     category: "Seafood",
     rating: 4.9,
     reviews: 89,
@@ -63,7 +90,7 @@ const similarProducts = [
     id: "3",
     name: "Cyber Sourdough Bread",
     price: 5.49,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/fp3.jpg",
     category: "Bakery",
     rating: 4.7,
     reviews: 156,
@@ -73,7 +100,7 @@ const similarProducts = [
     id: "4",
     name: "Stellar Greek Yogurt",
     price: 3.99,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/fp4.jpg",
     category: "Dairy",
     rating: 4.6,
     reviews: 203,
@@ -83,7 +110,7 @@ const similarProducts = [
     id: "5",
     name: "Hydroponic Baby Spinach",
     price: 2.99,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/fp5.jpg",
     category: "Vegetables",
     rating: 4.8,
     reviews: 78,
@@ -120,11 +147,16 @@ const reviews = [
 ]
 
 export default function ProductDetailPage() {
+  const router = useRouter()
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({
+    "Ripeness Level": "Ready to Eat",
+    "Pack Size": "Single (1 piece)"
+  })
   const { addItem } = useCart()
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlist()
-
+  console.log("Selected Variants:", product.images[selectedImage])
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       addItem({
@@ -133,8 +165,15 @@ export default function ProductDetailPage() {
         price: product.price,
         image: product.images[0],
         category: product.category,
+        variants: selectedVariants,
       })
     }
+  }
+
+  const handleBuyNow = () => {
+    handleAddToCart()
+    // Redirect to checkout page
+    router.push('/checkout')
   }
 
   const handleWishlistToggle = () => {
@@ -162,250 +201,276 @@ export default function ProductDetailPage() {
         ]}
       />
 
-      <div className="grid lg:grid-cols-2 gap-12 mb-16">
-        {/* Product Images */}
-        <div className="space-y-4">
-          <div className="aspect-square relative overflow-hidden rounded-lg bg-card text-card-foreground border">
-            <Image
-              src={product.images[selectedImage] || "/placeholder.svg"}
-              alt={product.name}
-              fill
-              className="object-cover"
-            />
-            {product.badge && <Badge className="absolute top-4 left-4">{product.badge}</Badge>}
-          </div>
-          <div className="grid grid-cols-4 gap-4">
-            {product.images.map((image, index) => (
-              <button
-                key={index}
-                onClick={() => setSelectedImage(index)}
-                className={`aspect-square relative overflow-hidden rounded-lg border-2 transition-colors ${
-                  selectedImage === index ? "border-primary" : "border-muted"
-                }`}
-              >
-                <Image
-                  src={image || "/placeholder.svg"}
-                  alt={`${product.name} ${index + 1}`}
-                  fill
-                  className="object-cover"
-                />
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Product Info */}
-        <div className="space-y-6">
-          <div>
-            <p className="text-muted-foreground text-sm uppercase tracking-wide mb-2">{product.category}</p>
-            <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
-
-            <div className="flex items-center gap-4 mb-4">
-              <div className="flex items-center gap-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-5 w-5 ${
-                      i < Math.floor(product.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-400"
-                    }`}
+      <div className="space-y-6 mr-2 mb-10">
+        <Card>
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <div className="aspect-square rounded-lg overflow-hidden bg-muted">
+                  <ImageZoom
+                    src={product.images[selectedImage] || "/placeholder.svg?width=600&height=600&query=No+Image"}
+                    alt={product.name}
+                    width={600}
+                    height={600}
+                    zoomLevel={2}
+                    containerClassName="aspect-square rounded-lg"
+                    className="rounded-lg"
                   />
-                ))}
-                <span className="ml-2 text-sm text-muted-foreground">
-                  {product.rating} ({product.reviews} reviews)
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 mb-6">
-              <span className="text-3xl font-bold">${product.price}</span>
-              {product.originalPrice && (
-                <span className="text-xl text-muted-foreground line-through">${product.originalPrice}</span>
-              )}
-              {product.originalPrice && (
-                <Badge variant="destructive">Save ${(product.originalPrice - product.price).toFixed(2)}</Badge>
-              )}
-            </div>
-
-            <p className="text-muted-foreground mb-6">{product.description}</p>
-
-            <div className="space-y-4 mb-6">
-              <h3 className="font-semibold">Key Features:</h3>
-              <ul className="space-y-2">
-                {product.features.map((feature, index) => (
-                  <li key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Quantity and Add to Cart */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <span className="font-semibold">Quantity:</span>
-              <div className="flex items-center border rounded-lg border-muted">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="rounded-r-none"
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
-                <span className="px-4 py-2 min-w-[3rem] text-center border-x border-muted">{quantity}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="rounded-l-none"
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              <span className="text-sm text-muted-foreground">{product.stockCount} in stock</span>
-            </div>
-
-            <div className="flex gap-4">
-              <Button onClick={handleAddToCart} className="flex-1" size="lg">
-                <ShoppingCart className="h-5 w-5 mr-2" />
-                Add to Cart
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={handleWishlistToggle}
-                className={`border-muted ${
-                  isInWishlist(product.id) ? "text-red-500 border-red-500" : "text-muted-foreground"
-                }`}
-              >
-                <Heart className={`h-5 w-5 ${isInWishlist(product.id) ? "fill-current" : ""}`} />
-              </Button>
-            </div>
-          </div>
-
-          {/* Shipping Info */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-muted">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-secondary rounded-lg">
-                <Truck className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="font-semibold text-sm">Free Shipping</p>
-                <p className="text-xs text-muted-foreground">On orders over $50</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-secondary rounded-lg">
-                <Shield className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="font-semibold text-sm">Quality Guarantee</p>
-                <p className="text-xs text-muted-foreground">100% satisfaction</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-secondary rounded-lg">
-                <RotateCcw className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="font-semibold text-sm">Easy Returns</p>
-                <p className="text-xs text-muted-foreground">30-day policy</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Product Details Tabs */}
-      <Tabs defaultValue="description" className="mb-16">
-        <TabsList className="grid w-full grid-cols-3 bg-secondary border-muted">
-          <TabsTrigger
-            value="description"
-            className="data-[state=active]:bg-secondary/50 data-[state=active]:text-primary"
-          >
-            Description
-          </TabsTrigger>
-          <TabsTrigger
-            value="nutrition"
-            className="data-[state=active]:bg-secondary/50 data-[state=active]:text-primary"
-          >
-            Nutrition
-          </TabsTrigger>
-          <TabsTrigger value="reviews" className="data-[state=active]:bg-secondary/50 data-[state=active]:text-primary">
-            Reviews ({product.reviews})
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="description" className="mt-6">
-          <Card className="bg-card text-card-foreground border">
-            <CardContent className="p-6">
-              <p className="text-muted-foreground leading-relaxed mb-4">{product.description}</p>
-              <h4 className="font-semibold mb-3">Product Features:</h4>
-              <ul className="space-y-2">
-                {product.features.map((feature, index) => (
-                  <li key={index} className="flex items-center gap-2 text-muted-foreground">
-                    <div className="w-2 h-2 bg-primary rounded-full" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="nutrition" className="mt-6">
-          <Card className="bg-card text-card-foreground border">
-            <CardContent className="p-6">
-              <h4 className="font-semibold mb-4">Nutritional Information</h4>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                {Object.entries(product.nutrition).map(([key, value]) => (
-                  <div key={key} className="text-center p-4 bg-secondary rounded-lg">
-                    <p className="text-2xl font-bold text-primary">{value}</p>
-                    <p className="text-sm text-muted-foreground capitalize">{key}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="reviews" className="mt-6">
-          <Card className="bg-card text-card-foreground border">
-            <CardContent className="p-6">
-              <div className="space-y-6">
-                {reviews.map((review) => (
-                  <div key={review.id} className="border-b border-muted pb-6 last:border-b-0">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <h5 className="font-semibold">{review.name}</h5>
-                        {review.verified && (
-                          <Badge variant="secondary" className="text-xs">
-                            Verified Purchase
-                          </Badge>
-                        )}
-                      </div>
-                      <span className="text-sm text-muted-foreground">{review.date}</span>
-                    </div>
-                    <div className="flex items-center gap-2 mb-3">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-4 w-4 ${
-                            i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-400"
+                </div>
+                {product.images.length > 1 && (
+                  <div className="grid grid-cols-4 gap-2">
+                    {product.images.map((image, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedImage(index)}
+                        className={`aspect-square rounded-lg overflow-hidden border-2 ${selectedImage === index ? "border-primary" : "border-muted"
                           }`}
+                      >
+                        <Image
+                          src={image || "/placeholder.svg"}
+                          alt={`Product image ${index + 1}`}
+                          width={150}
+                          height={150}
+                          className="w-full h-full object-cover"
                         />
-                      ))}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    {product.badge && <Badge variant="outline">{product.badge}</Badge>}
+                    {!product.inStock && <Badge variant="destructive">Out of Stock</Badge>}
+                  </div>
+                  <h1 className="text-3xl font-bold cursor-pointer">
+                    {product.name}
+                  </h1>
+                  {product.rating && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <div className="flex items-center">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${i < Math.floor(product.rating) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"
+                              }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-sm text-muted-foreground">
+                        {product.rating.toFixed(1)} ({product.reviews} reviews)
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl font-bold">${product.price.toFixed(2)}</span>
+                    {product.originalPrice && (
+                      <>
+                        <span className="text-xl text-muted-foreground line-through">${product.originalPrice.toFixed(2)}</span>
+                        <Badge variant="destructive">
+                          Save ${(product.originalPrice - product.price).toFixed(2)}
+                        </Badge>
+                      </>
+                    )}
+                  </div>
+                  {product.originalPrice && (
+                    <p className="text-sm text-green-600">You save ${(product.originalPrice - product.price).toFixed(2)}</p>
+                  )}
+                </div>
+
+                {product.variants && product.variants.length > 0 && (
+                  <div className="space-y-4">
+                    {product.variants.map((variant) => (
+                      <div key={variant.id}>
+                        <label className="text-sm font-medium mb-2 block">{variant.name}</label>
+                        <div className="flex flex-wrap gap-2">
+                          {variant.options.map((option) => (
+                            <Button
+                              key={option}
+                              variant={selectedVariants[variant.name] === option ? "default" : "outline"}
+                              onClick={() => setSelectedVariants((prev) => ({ ...prev, [variant.name]: option }))}
+                              className="text-sm"
+                            >
+                              {option}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <span className="font-semibold">Quantity:</span>
+                    <div className="flex items-center border rounded-lg border-muted">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        className="rounded-r-none"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="px-4 py-2 min-w-[3rem] text-center border-x border-muted">{quantity}</span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setQuantity(quantity + 1)}
+                        className="rounded-l-none"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Stock: {product.stockCount} available
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Minimum order quantity: 1
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <Button size="lg" className="flex-1" onClick={handleAddToCart}>
+                      <ShoppingCart className="mr-2 h-4 w-4" />
+                      Add to Cart
+                    </Button>
+                    <Button size="lg" className="flex-1" variant="secondary" onClick={handleBuyNow}>
+                      Buy Now
+                    </Button>
+                  </div>
+                  <div className="flex items-center gap-4 justify-center">
+                    <Button variant="outline" size="lg" onClick={handleWishlistToggle}>
+                      <Heart className={`h-4 w-4 ${isInWishlist(product.id) ? "fill-current text-red-500" : ""}`} />
+                    </Button>
+                    <Button variant="outline" size="lg">
+                      <Share2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Truck className="h-4 w-4 text-muted-foreground" />
+                    <span>Free Shipping</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Shield className="h-4 w-4 text-muted-foreground" />
+                    <span>Quality Guarantee</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <RotateCcw className="h-4 w-4 text-muted-foreground" />
+                    <span>Easy Returns</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Product Details Tabs */}
+        <Tabs defaultValue="description" className="mb-16">
+          <TabsList className="grid w-full grid-cols-3 bg-secondary border-muted">
+            <TabsTrigger value="description">Description</TabsTrigger>
+            <TabsTrigger value="specifications">Categories & Specifications</TabsTrigger>
+            {/* <TabsTrigger value="categories">Categories</TabsTrigger> */}
+            <TabsTrigger value="reviews">Reviews ({product.reviews})</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="description" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Product Description</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed">{product.description}</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="specifications" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Categories</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {product.categories.map((category) => (
+                    <Badge key={category.id} variant="secondary">
+                      {category.name}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+              <CardHeader>
+                <CardTitle>Specifications</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {product.specifications.map((spec) => (
+                    <div key={spec.id} className="flex justify-between py-2 border-b border-muted">
+                      <span className="font-medium">{spec.name}</span>
+                      <span className="text-muted-foreground">{spec.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* <TabsContent value="categories" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Categories</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {product.categories.map((category) => (
+                    <Badge key={category.id} variant="secondary">
+                      {category.name}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent> */}
+
+          <TabsContent value="reviews" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Customer Reviews</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {reviews.map((review) => (
+                  <div key={review.id} className="border-b border-muted pb-4 last:border-b-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"
+                              }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="font-medium">{review.name}</span>
+                      {review.date && <span className="text-sm text-muted-foreground">{review.date}</span>}
                     </div>
                     <p className="text-muted-foreground">{review.comment}</p>
                   </div>
                 ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
 
       {/* Similar Products */}
       <section>

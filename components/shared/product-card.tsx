@@ -58,7 +58,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product.id}`} className="group">
-      <div className="bg-background rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+      <div className="bg-background rounded-md overflow-hidden border border-gray-100">
         <div className="relative aspect-square overflow-hidden">
           <Image
             src={product.image || "/placeholder.svg"}
@@ -111,7 +111,7 @@ export function ProductCard({ product }: ProductCardProps) {
             <Button
               size="sm"
               onClick={handleAddToCart}
-              className="opacity-0 group-hover:opacity-100 transition-opacity"
+              className=""
             >
               <ShoppingCart className="h-4 w-4 mr-1" />
               Add

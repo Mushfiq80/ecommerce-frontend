@@ -97,14 +97,14 @@ export default function DashboardPage() {
                 <MapPin className="h-4 w-4 mr-2" />
                 Addresses
               </Button>
-              <Button
+              {/* <Button
                 variant={activeTab === "wishlist" ? "default" : "ghost"}
                 className="w-full justify-start"
                 onClick={() => setActiveTab("wishlist")}
               >
                 <Heart className="h-4 w-4 mr-2" />
                 Wishlist
-              </Button>
+              </Button> */}
               <Button
                 variant={activeTab === "profile" ? "default" : "ghost"}
                 className="w-full justify-start"
