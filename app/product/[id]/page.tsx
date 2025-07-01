@@ -85,6 +85,20 @@ const similarProducts = [
     rating: 4.9,
     reviews: 89,
     badge: "Fresh",
+    inStock: true,
+    stockCount: 8,
+    variants: [
+      {
+        id: 1,
+        name: "Cut Type",
+        options: ["Fillet", "Steaks"]
+      },
+      {
+        id: 2,
+        name: "Weight",
+        options: ["250g", "500g"]
+      }
+    ],
   },
   {
     id: "3",
@@ -95,6 +109,15 @@ const similarProducts = [
     rating: 4.7,
     reviews: 156,
     badge: "Artisan",
+    inStock: true,
+    stockCount: 6,
+    variants: [
+      {
+        id: 1,
+        name: "Size",
+        options: ["Small Loaf", "Large Loaf"]
+      }
+    ],
   },
   {
     id: "4",
@@ -105,6 +128,20 @@ const similarProducts = [
     rating: 4.6,
     reviews: 203,
     badge: "Premium",
+    inStock: true,
+    stockCount: 15,
+    variants: [
+      {
+        id: 1,
+        name: "Flavor",
+        options: ["Plain", "Vanilla", "Strawberry"]
+      },
+      {
+        id: 2,
+        name: "Size",
+        options: ["150g", "500g"]
+      }
+    ],
   },
   {
     id: "5",
@@ -115,6 +152,15 @@ const similarProducts = [
     rating: 4.8,
     reviews: 78,
     badge: "Organic",
+    inStock: true,
+    stockCount: 20,
+    variants: [
+      {
+        id: 1,
+        name: "Package Size",
+        options: ["100g", "250g"]
+      }
+    ],
   },
 ]
 
@@ -424,23 +470,6 @@ export default function ProductDetailPage() {
               </CardContent>
             </Card>
           </TabsContent>
-
-          {/* <TabsContent value="categories" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Categories</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {product.categories.map((category) => (
-                    <Badge key={category.id} variant="secondary">
-                      {category.name}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent> */}
 
           <TabsContent value="reviews" className="mt-6">
             <Card>
