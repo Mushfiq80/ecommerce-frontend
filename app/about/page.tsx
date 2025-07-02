@@ -140,8 +140,8 @@ export default function AboutPage() {
               About ModernMart
             </h1>
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-              We're more than just an online grocery store. We're your trusted partner in bringing fresh, 
-              high-quality products directly to your doorstep while supporting sustainable farming practices 
+              We're more than just an online grocery store. We're your trusted partner in bringing fresh,
+              high-quality products directly to your doorstep while supporting sustainable farming practices
               and local communities.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -173,24 +173,57 @@ export default function AboutPage() {
           ))}
         </div>
 
+        {/* Timeline Section */}
+        <div className="mb-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Our Journey</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Key milestones that shaped our company
+            </p>
+          </div>
+
+          <div className="relative">
+            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-border"></div>
+            <div className="space-y-8">
+              {milestones.map((milestone, index) => (
+                <div key={index} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
+                  <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8'}`}>
+                    <Card className="hover:shadow-lg transition-shadow">
+                      <CardContent className="p-6">
+                        <Badge className="mb-2">{milestone.year}</Badge>
+                        <h3 className="font-bold text-lg mb-2">{milestone.title}</h3>
+                        <p className="text-muted-foreground">{milestone.description}</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                  <div className="relative flex items-center justify-center w-8 h-8 bg-primary rounded-full border-4 border-background z-10">
+                    <div className="w-2 h-2 bg-background rounded-full"></div>
+                  </div>
+                  <div className="w-1/2"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Story Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
           <div className="space-y-6">
             <h2 className="text-3xl font-bold">Our Story</h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                Founded in 2019, ModernMart began with a simple yet powerful vision: to make fresh, 
-                high-quality food accessible to everyone while supporting sustainable farming practices. 
-                What started as a local initiative has grown into a nationwide platform connecting 
+                Founded in 2019, ModernMart began with a simple yet powerful vision: to make fresh,
+                high-quality food accessible to everyone while supporting sustainable farming practices.
+                What started as a local initiative has grown into a nationwide platform connecting
                 conscious consumers with premium products.
               </p>
               <p>
-                Our journey has been driven by the belief that everyone deserves access to nutritious, 
-                ethically-sourced food. We work directly with local farmers, artisans, and producers 
+                Our journey has been driven by the belief that everyone deserves access to nutritious,
+                ethically-sourced food. We work directly with local farmers, artisans, and producers
                 who share our commitment to quality and sustainability.
               </p>
               <p>
-                Today, we're proud to serve over 50,000 customers across the country, delivering not 
+                Today, we're proud to serve over 50,000 customers across the country, delivering not
                 just products, but a promise of quality, freshness, and ethical sourcing in every order.
               </p>
             </div>
@@ -199,7 +232,7 @@ export default function AboutPage() {
               <span className="text-sm font-medium">Certified Organic Partner</span>
             </div>
           </div>
-          
+
           <div className="relative">
             <Card className="overflow-hidden">
               <CardContent className="p-0">
@@ -227,7 +260,7 @@ export default function AboutPage() {
               The principles that guide everything we do, from sourcing to delivery
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {values.map((value, index) => (
               <Card key={index} className="group hover:shadow-lg transition-all duration-300">
@@ -255,7 +288,7 @@ export default function AboutPage() {
               The passionate people behind ModernMart's success
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {team.map((member, index) => (
               <Card key={index} className="text-center hover:shadow-lg transition-shadow">
@@ -280,46 +313,13 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Timeline Section */}
-        <div className="mb-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Our Journey</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Key milestones that shaped our company
-            </p>
-          </div>
-          
-          <div className="relative">
-            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-border"></div>
-            <div className="space-y-8">
-              {milestones.map((milestone, index) => (
-                <div key={index} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
-                  <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8'}`}>
-                    <Card className="hover:shadow-lg transition-shadow">
-                      <CardContent className="p-6">
-                        <Badge className="mb-2">{milestone.year}</Badge>
-                        <h3 className="font-bold text-lg mb-2">{milestone.title}</h3>
-                        <p className="text-muted-foreground">{milestone.description}</p>
-                      </CardContent>
-                    </Card>
-                  </div>
-                  <div className="relative flex items-center justify-center w-8 h-8 bg-primary rounded-full border-4 border-background z-10">
-                    <div className="w-2 h-2 bg-background rounded-full"></div>
-                  </div>
-                  <div className="w-1/2"></div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
         {/* CTA Section */}
         <div className="text-center">
           <Card className="max-w-3xl mx-auto">
             <CardContent className="p-12">
               <h2 className="text-3xl font-bold mb-4">Ready to Experience the Difference?</h2>
               <p className="text-xl text-muted-foreground mb-8">
-                Join thousands of satisfied customers who trust ModernMart for their grocery needs. 
+                Join thousands of satisfied customers who trust ModernMart for their grocery needs.
                 Discover fresh, quality products delivered right to your door.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

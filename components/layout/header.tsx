@@ -8,8 +8,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Dock, DockIcon } from "@/components/magicui/dock"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useCart } from "@/components/providers/cart-provider"
 import { useWishlist } from "@/components/providers/wishlist-provider"
+import { cn } from "@/lib/utils"
 
 export function Header() {
   const { theme, setTheme } = useTheme()
@@ -32,7 +35,7 @@ export function Header() {
       <div className="container mx-auto px-4 py-2">
         <div className="flex items-center justify-between gap-4">
           {/* Group 1: Logo */}
-          <div className="flex items-center">
+          <div className="flex items-center flex-shrink-0">
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <div className="bg-primary text-primary-foreground p-2 rounded-lg">
                 <Store className="h-6 w-6" />
@@ -42,7 +45,7 @@ export function Header() {
           </div>
 
           {/* Group 2: Navigation Links */}
-          <div className="flex items-center">
+          <div className="flex items- flex-1 justify-center">
             <nav className="hidden lg:flex items-center gap-6">
               {navigationLinks.map((link) => (
                 <Link
@@ -58,85 +61,179 @@ export function Header() {
           </div>
 
           {/* Group 3: Action Icons */}
-          <div className="flex items-center gap-2">
-            {/* Shopping Cart */}
-            <Link href="/cart" className="flex items-center gap-2 hover:bg-muted p-3 rounded-lg transition-colors">
-              <div className="relative">
-                <ShoppingCart className="h-6 w-6 text-foreground" />
-                {totalItems > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
-                    {totalItems}
-                  </Badge>
-                )}
-              </div>
-            </Link>
+          <div className="flex items-center flex-shrink-0">
+            <TooltipProvider>
+              <Dock direction="middle" className="bg-transparent border-none">
+              {/* Shopping Cart */}
+              <DockIcon>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link 
+                      href="/cart" 
+                      className={cn(
+                        "relative flex items-center justify-center size-12 rounded-full hover:bg-muted transition-colors",
+                        "group"
+                      )}
+                    >
+                      <ShoppingCart className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
+                      {totalItems > 0 && (
+                        <Badge className="absolute top-1 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                          {totalItems}
+                        </Badge>
+                      )}
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Shopping Cart ({totalItems})</p>
+                  </TooltipContent>
+                </Tooltip>
+              </DockIcon>
 
-            {/* Wishlist */}
-            <Link href="/wishlist" className="flex items-center gap-2 hover:bg-muted p-3 rounded-lg transition-colors">
-              <div className="relative">
-                <Heart className="h-6 w-6 text-foreground" />
-                {wishlistItems > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
-                    {wishlistItems}
-                  </Badge>
-                )}
-              </div>
-            </Link>
+              {/* Wishlist */}
+              <DockIcon>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link 
+                      href="/wishlist" 
+                      className={cn(
+                        "relative flex items-center justify-center size-12 rounded-full hover:bg-muted transition-colors",
+                        "group"
+                      )}
+                    >
+                      <Heart className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
+                      {wishlistItems > 0 && (
+                        <Badge className="absolute top-1 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                          {wishlistItems}
+                        </Badge>
+                      )}
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Wishlist ({wishlistItems})</p>
+                  </TooltipContent>
+                </Tooltip>
+              </DockIcon>
 
-            {/* User Account */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div className="flex items-center gap-2 hover:bg-muted p-3 rounded-lg transition-colors cursor-pointer">
-                  <User className="h-6 w-6 text-foreground" />
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link href="/login">Sign In</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/register">Create Account</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard">My Account</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              {/* User Account */}
+              <DockIcon>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <div className={cn(
+                          "flex items-center justify-center size-12 rounded-full hover:bg-muted transition-colors cursor-pointer",
+                          "group"
+                        )}>
+                          <User className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
+                        </div>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem asChild>
+                          <Link href="/login">Sign In</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link href="/register">Create Account</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link href="/dashboard">My Account</Link>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Account</p>
+                  </TooltipContent>
+                </Tooltip>
+              </DockIcon>
 
-            {/* Theme Toggle */}
-            <div
-              className="flex items-center gap-2 hover:bg-muted p-3 rounded-lg transition-colors cursor-pointer"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            >
-              {theme === "dark" ? (
-                <Sun className="h-6 w-6 text-foreground" />
-              ) : (
-                <Moon className="h-6 w-6 text-foreground" />
-              )}
-            </div>
+              {/* Theme Toggle */}
+              <DockIcon>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div
+                      className={cn(
+                        "flex items-center justify-center size-12 rounded-full hover:bg-muted transition-colors cursor-pointer",
+                        "group"
+                      )}
+                      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                    >
+                      {theme === "dark" ? (
+                        <Sun className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
+                      ) : (
+                        <Moon className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
+                      )}
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Toggle Theme</p>
+                  </TooltipContent>
+                </Tooltip>
+              </DockIcon>
 
-            {/* Language Selector */}
-            <div className="flex items-center gap-2 hover:bg-muted p-3 rounded-lg transition-colors cursor-pointer">
-              <Globe className="h-6 w-6 text-foreground" />
-            </div>
+              {/* Language Selector */}
+              <DockIcon>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className={cn(
+                      "flex items-center justify-center size-12 rounded-full hover:bg-muted transition-colors cursor-pointer",
+                      "group"
+                    )}>
+                      <Globe className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Language</p>
+                  </TooltipContent>
+                </Tooltip>
+              </DockIcon>
 
-            {/* Search Toggle */}
-            <div 
-              className="flex items-center gap-2 hover:bg-muted p-3 rounded-lg transition-colors cursor-pointer"
-              onClick={() => setIsSearchOpen(true)}
-            >
-              <Search className="h-6 w-6 text-foreground" />
-            </div>
+              {/* Search Toggle */}
+              <DockIcon>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div 
+                      className={cn(
+                        "flex items-center justify-center size-12 rounded-full hover:bg-muted transition-colors cursor-pointer",
+                        "group"
+                      )}
+                      onClick={() => setIsSearchOpen(true)}
+                    >
+                      <Search className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Search</p>
+                  </TooltipContent>
+                </Tooltip>
+              </DockIcon>
 
-            {/* Mobile Menu Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </Button>
+              {/* Mobile Menu Toggle */}
+              <DockIcon className="lg:hidden">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className={cn(
+                        "size-12 rounded-full hover:bg-muted transition-colors",
+                        "group"
+                      )}
+                      onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    >
+                      {isMobileMenuOpen ? (
+                        <X className="h-6 w-6 transition-transform group-hover:scale-110" />
+                      ) : (
+                        <Menu className="h-6 w-6 transition-transform group-hover:scale-110" />
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Menu</p>
+                  </TooltipContent>
+                </Tooltip>
+              </DockIcon>
+            </Dock>
+          </TooltipProvider>
           </div>
         </div>
 
