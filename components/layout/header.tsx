@@ -32,7 +32,7 @@ export function Header() {
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       {/* Top Section */}
-      <div className="container mx-auto px-4 py-2">
+      <div className="container mx-auto px-4 py-0.5">
         <div className="flex items-center justify-between gap-4">
           {/* Group 1: Logo */}
           <div className="flex items-center flex-shrink-0">
@@ -63,7 +63,7 @@ export function Header() {
           {/* Group 3: Action Icons */}
           <div className="flex items-center flex-shrink-0">
             <TooltipProvider>
-              <Dock direction="middle" className="bg-transparent border-none">
+              <Dock direction="middle" className="bg-transparent border-none p-0">
               {/* Shopping Cart */}
               <DockIcon>
                 <Tooltip>
@@ -71,13 +71,13 @@ export function Header() {
                     <Link 
                       href="/cart" 
                       className={cn(
-                        "relative flex items-center justify-center size-12 rounded-full hover:bg-muted transition-colors",
+                        "relative flex items-center justify-center size-10 rounded-full hover:bg-muted transition-colors",
                         "group"
                       )}
                     >
-                      <ShoppingCart className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
+                      <ShoppingCart className="h-5 w-5 text-foreground transition-transform group-hover:scale-110" />
                       {totalItems > 0 && (
-                        <Badge className="absolute top-1 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                        <Badge className="absolute -top-0 -right-2 h-4 w-4 flex items-center justify-center p-0 text-xs">
                           {totalItems}
                         </Badge>
                       )}
@@ -96,13 +96,13 @@ export function Header() {
                     <Link 
                       href="/wishlist" 
                       className={cn(
-                        "relative flex items-center justify-center size-12 rounded-full hover:bg-muted transition-colors",
+                        "relative flex items-center justify-center size-10 rounded-full hover:bg-muted transition-colors",
                         "group"
                       )}
                     >
-                      <Heart className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
+                      <Heart className="h-5 w-5 text-foreground transition-transform group-hover:scale-110" />
                       {wishlistItems > 0 && (
-                        <Badge className="absolute top-1 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                        <Badge className="absolute -top-0 -right-2 h-4 w-4 flex items-center justify-center p-0 text-xs">
                           {wishlistItems}
                         </Badge>
                       )}
@@ -121,10 +121,10 @@ export function Header() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <div className={cn(
-                          "flex items-center justify-center size-12 rounded-full hover:bg-muted transition-colors cursor-pointer",
+                          "flex items-center justify-center size-10 rounded-full hover:bg-muted transition-colors cursor-pointer",
                           "group"
                         )}>
-                          <User className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
+                          <User className="h-5 w-5 text-foreground transition-transform group-hover:scale-110" />
                         </div>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
@@ -152,15 +152,15 @@ export function Header() {
                   <TooltipTrigger asChild>
                     <div
                       className={cn(
-                        "flex items-center justify-center size-12 rounded-full hover:bg-muted transition-colors cursor-pointer",
+                        "flex items-center justify-center size-10 rounded-full hover:bg-muted transition-colors cursor-pointer",
                         "group"
                       )}
                       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                     >
                       {theme === "dark" ? (
-                        <Sun className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
+                        <Sun className="h-5 w-5 text-foreground transition-transform group-hover:scale-110" />
                       ) : (
-                        <Moon className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
+                        <Moon className="h-5 w-5 text-foreground transition-transform group-hover:scale-110" />
                       )}
                     </div>
                   </TooltipTrigger>
@@ -171,21 +171,21 @@ export function Header() {
               </DockIcon>
 
               {/* Language Selector */}
-              <DockIcon>
+              {/* <DockIcon>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className={cn(
-                      "flex items-center justify-center size-12 rounded-full hover:bg-muted transition-colors cursor-pointer",
+                      "flex items-center justify-center size-10 rounded-full hover:bg-muted transition-colors cursor-pointer",
                       "group"
                     )}>
-                      <Globe className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
+                      <Globe className="h-5 w-5 text-foreground transition-transform group-hover:scale-110" />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Language</p>
                   </TooltipContent>
                 </Tooltip>
-              </DockIcon>
+              </DockIcon> */}
 
               {/* Search Toggle */}
               <DockIcon>
@@ -193,12 +193,12 @@ export function Header() {
                   <TooltipTrigger asChild>
                     <div 
                       className={cn(
-                        "flex items-center justify-center size-12 rounded-full hover:bg-muted transition-colors cursor-pointer",
+                        "flex items-center justify-center size-10 rounded-full hover:bg-muted transition-colors cursor-pointer",
                         "group"
                       )}
                       onClick={() => setIsSearchOpen(true)}
                     >
-                      <Search className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
+                      <Search className="h-5 w-5 text-foreground transition-transform group-hover:scale-110" />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -215,15 +215,15 @@ export function Header() {
                       variant="ghost"
                       size="icon"
                       className={cn(
-                        "size-12 rounded-full hover:bg-muted transition-colors",
+                        "size-10 rounded-full hover:bg-muted transition-colors",
                         "group"
                       )}
                       onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     >
                       {isMobileMenuOpen ? (
-                        <X className="h-6 w-6 transition-transform group-hover:scale-110" />
+                        <X className="h-5 w-5 transition-transform group-hover:scale-110" />
                       ) : (
-                        <Menu className="h-6 w-6 transition-transform group-hover:scale-110" />
+                        <Menu className="h-5 w-5 transition-transform group-hover:scale-110" />
                       )}
                     </Button>
                   </TooltipTrigger>
@@ -239,7 +239,7 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <nav className="lg:hidden py-4 border-t mt-4">
+          <nav className="lg:hidden py-4 border-t mt-2">
             <div className="flex flex-col gap-4">
               {navigationLinks.map((link) => (
                 <Link
