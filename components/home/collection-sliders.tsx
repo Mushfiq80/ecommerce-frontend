@@ -237,11 +237,12 @@ function CollectionSlider({ title, products, autoAdvance = true }: CollectionSli
       </div>
 
       <Swiper
-        spaceBetween={24}
-        slidesPerView={4}
+        spaceBetween={16}
+        slidesPerView={2}
         breakpoints={{
-          640: { slidesPerView: 3 },
-          1024: { slidesPerView: 4 },
+          640: { slidesPerView: 2, spaceBetween: 20 },
+          768: { slidesPerView: 3, spaceBetween: 24 },
+          1024: { slidesPerView: 4, spaceBetween: 24 },
         }}
         navigation={{
           prevEl: `#${navPrev}`,
